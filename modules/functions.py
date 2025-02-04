@@ -12,6 +12,14 @@ def get_todos(filename=todos_filename):
     return line_list
 
 
+def get_todos_str():
+    the_list = get_todos()
+    the_list_str = ""
+    for i, item in the_list:
+        the_list_str += f"{i+1} - {item}\n"
+    return the_list_str
+
+
 def save_todos(the_list, filename=todos_filename):
     """
     Saves todo items into a file
@@ -49,3 +57,16 @@ def show_todos(the_list):
     """
     for i, todo in enumerate(the_list):
         print(f"{i + 1} - {todo.strip()}")
+
+def add_todo(the_list, todo):
+    the_list.append(f"{todo.capitalize()}\n")
+    save_todos(the_list)
+
+
+def done_todo(the_list, todo):
+    try:
+        if todo in range(len(the_list)):
+            the_list.pop(todo)
+            save_todos(the_list)
+    except ValueError:
+        pass
