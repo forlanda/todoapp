@@ -70,3 +70,13 @@ def done_todo(the_list, todo):
             save_todos(the_list)
     except ValueError:
         pass
+
+
+def todo_exists(the_list, todo):
+    try:
+        if todo in range(len(the_list)):
+            return True
+        else:
+            return False
+    except ValueError:
+        pass

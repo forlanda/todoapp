@@ -2,6 +2,8 @@ import FreeSimpleGUI as sg
 import globals
 import modules.functions
 
+in_edit_mode = False
+
 def get_list_string(the_list):
     list_string = ""
     for index, item in enumerate(the_list):
@@ -39,13 +41,34 @@ while True:
                 window['-OUTPUT-'].update(get_list_string(modules.functions.get_todos()))
                 todo_input.update("")
         case "Edit":
-            window['-OUTPUT-'].update("Edit clicked")
+            if not in_edit_mode:
+                in_edit_mode = True
+                try:
+                    todo = int(todo_input.get())-1
+                    if modules.functions.todo_exists(todos,todo):
+                        todo_input.update(f"{todo+1} - {todos[todo]}")
+
+                except ValueError:
+                    pass
+            else:
+                try:
+                    new_todo_pos = int(todo_input.get().find("-"))
+                    todo = todo_input.get()[new_todo_pos + 1:]
+                    todo_index = int(todo_input.get()[:new_todo_pos].strip())-1
+                    todos[todo_index] = f"{todo.strip()}\n".capitalize()
+                    modules.functions.save_todos(todos)
+                    window['-OUTPUT-'].update(get_list_string(modules.functions.get_todos()))
+                    in_edit_mode = False
+                    todo_input.update("")
+                except IndexError:
+                    pass
         case "Done":
             try:
                 todo = int(todo_input.get())-1
-                modules.functions.done_todo(todos,todo)
-                window['-OUTPUT-'].update(get_list_string(modules.functions.get_todos()))
-                todo_input.update("")
+                if modules.functions.todo_exists(todos, todo):
+                    modules.functions.done_todo(todos,todo)
+                    window['-OUTPUT-'].update(get_list_string(modules.functions.get_todos()))
+                    todo_input.update("")
             except ValueError:
                 pass
         case sg.WINDOW_CLOSED:
